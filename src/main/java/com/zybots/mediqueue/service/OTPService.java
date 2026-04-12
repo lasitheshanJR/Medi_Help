@@ -21,6 +21,7 @@ public class OTPService {
     public void generateAndSendOTP(String email) {
         String otp = String.format("%04d", new Random().nextInt(10000));
         otpStorage.put(email, otp);
+        System.out.println("Generated OTP: " + otp + " for email: " + email);
         
         try {
             org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
@@ -28,21 +29,29 @@ public class OTPService {
             message.setSubject("Your Mediqueue OTP");
             message.setText("Your verification code is: " + otp);
             mailSender.send(message);
-            System.out.println("Email sent successfully to " + email);
+            System.out.println("SUCCESS: JavaMailSender sent OTP to " + email);
         } catch (Exception e) {
-            System.err.println("Failed to send email to " + email + ": " + e.getMessage());
-            // Still log OTP locally if email fails due to placeholder credentials
-            System.out.println("[FALLBACK] OTP for " + email + " is: " + otp);
+            System.err.println("CRITICAL ERROR: Failed to send email to " + email);
+            System.err.println("Error details: " + e.getMessage());
+            e.printStackTrace();
+            // Still log OTP locally so user can find it in their Railway logs
+            System.out.println("[FALLBACK LOG] Since email failed, use this OTP to test: " + otp);
         }
     }
 
     /**
      * Verifies if the provided OTP matches the stored OTP for the email.
-     * Removes the OTP from storage if it matches.
+     * Also allows '1111' as a bypass code for presentation testing.
      */
     public boolean verifyOTP(String email, String otp) {
+        // BYPASS: Use 1111 if your real email is delayed!
+        if (otp.equals("1111")) {
+            System.out.println("Using Bypass code '1111' for email: " + email);
+            return true;
+        }
+
         if (otpStorage.containsKey(email) && otpStorage.get(email).equals(otp)) {
-            otpStorage.remove(email); // OTP is verified and should only be used once
+            otpStorage.remove(email);
             return true;
         }
         return false;
