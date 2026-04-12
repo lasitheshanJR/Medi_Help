@@ -61,6 +61,11 @@ public class AuthController {
             @RequestParam(value = "file", required = false) org.springframework.web.multipart.MultipartFile file) {
             
         try {
+            // Check if user already exists
+            if (userRepository.findByEmail(email).isPresent()) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Email already registered. Please login instead."));
+            }
+
             com.zybots.mediqueue.model.Role userRole = com.zybots.mediqueue.model.Role.valueOf(role.toUpperCase());
             User user;
 
