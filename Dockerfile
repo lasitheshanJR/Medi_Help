@@ -11,7 +11,10 @@ FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 # Copy the built JAR from the builder stage
 COPY --from=build /app/target/mediqueue-0.0.1-SNAPSHOT.jar app.jar
-# Expose the default Spring Boot port
+
+# Allow Railway/Cloud hosts to inject the port
+ENV PORT=8082
 EXPOSE 8082
-# Run the JAR
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Run the JAR and tell Spring to use the injected PORT variable
+ENTRYPOINT ["java", "-Xmx512m", "-jar", "app.jar", "--server.port=${PORT}"]
