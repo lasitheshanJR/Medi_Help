@@ -19,7 +19,7 @@ public class OTPService {
      * and sends it via real email.
      */
     public void generateAndSendOTP(String email) {
-        String otp = String.format("%04d", 1111);
+        String otp = "1111";
         otpStorage.put(email, otp);
         System.out.println("Generated OTP: " + otp + " for email: " + email);
         
