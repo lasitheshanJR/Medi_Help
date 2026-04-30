@@ -92,7 +92,7 @@ public class DataInitializer {
 
             appointmentRepository.saveAll(List.of(a1, a2, a3));
 
-            System.out.println("Wait... Seed Data Initialized!");
+            // System.out.println("Wait... Seed Data Initialized!");
         };
     }
 }
