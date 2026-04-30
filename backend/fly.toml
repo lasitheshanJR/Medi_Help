@@ -1,6 +1,6 @@
 # fly.toml app configuration file generated for mediqueue
 
-app = "mediqueue-backend"
+app = "medi-help"
 primary_region = "iad"
 
 [build]
