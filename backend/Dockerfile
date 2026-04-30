@@ -12,8 +12,7 @@ WORKDIR /app
 # Copy the built JAR from the builder stage
 COPY --from=build /app/target/mediqueue-0.0.1-SNAPSHOT.jar app.jar
 
-# Allow Railway/Cloud hosts to inject the port
-ENV PORT=8080
+# Port is injected by Railway automatically
 EXPOSE 8080
 
 # Run the JAR and tell Spring to use the injected PORT variable
