@@ -1,0 +1,30 @@
+# --- Java & Spring Boot (Backend) ---
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.class
+*.log
+.settings/
+.classpath
+.project
+bin/
+
+# --- Flutter & Dart (Frontend) ---
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+ios/.generated/
+android/app/debug/
+android/app/release/
+*.p12
+*.js_
+*.js_hi
+*.js_map
+
+# --- IDEs & OS ---
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
