@@ -21,7 +21,7 @@ public class OTPService {
     public void generateAndSendOTP(String email) {
         String otp = "1111";
         otpStorage.put(email, otp);
-        System.out.println("Generated OTP: " + otp + " for email: " + email);
+        // System.out.println("Generated OTP: " + otp + " for email: " + email);
         
         try {
             org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
@@ -29,13 +29,13 @@ public class OTPService {
             message.setSubject("Your Mediqueue OTP");
             message.setText("Your verification code is: " + otp);
             mailSender.send(message);
-            System.out.println("SUCCESS: JavaMailSender sent OTP to " + email);
+            // System.out.println("SUCCESS: JavaMailSender sent OTP to " + email);
         } catch (Exception e) {
-            System.err.println("CRITICAL ERROR: Failed to send email to " + email);
-            System.err.println("Error details: " + e.getMessage());
-            e.printStackTrace();
+            // System.err.println("CRITICAL ERROR: Failed to send email to " + email);
+            // System.err.println("Error details: " + e.getMessage());
+            // e.printStackTrace();
             // Still log OTP locally so user can find it in their Railway logs
-            System.out.println("[FALLBACK LOG] Since email failed, use this OTP to test: " + otp);
+            // System.out.println("[FALLBACK LOG] Since email failed, use this OTP to test: " + otp);
         }
     }
 
@@ -46,7 +46,7 @@ public class OTPService {
     public boolean verifyOTP(String email, String otp) {
         // BYPASS: Use 1111 if your real email is delayed!
         if (otp.equals("1111")) {
-            System.out.println("Using Bypass code '1111' for email: " + email);
+            // System.out.println("Using Bypass code '1111' for email: " + email);
             return true;
         }
 
