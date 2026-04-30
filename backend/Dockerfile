@@ -17,4 +17,4 @@ ENV PORT=8080
 EXPOSE 8080
 
 # Run the JAR and tell Spring to use the injected PORT variable
-ENTRYPOINT ["java", "-Xmx512m", "-jar", "app.jar", "--server.port=${PORT}"]
+ENTRYPOINT ["java", "-Xmx512m", "-jar", "app.jar", "--server.port=${PORT}", "--server.address=0.0.0.0"]
