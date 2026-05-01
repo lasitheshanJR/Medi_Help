@@ -6,7 +6,7 @@ class ApiService {
   // Use correct backend URL depending on platform
   // Windows/Web: http://localhost:8082/api
   // Production Railway URL
-  static const String baseUrl = 'https://medihelp-production-e4c4.up.railway.app/api';
+  static const String baseUrl = 'https://medihelp-production-3835.up.railway.app/api';
 
   // ----------------- AUTHENTICATION & REGISTRATION -----------------
   // Register unified user with multipart support
