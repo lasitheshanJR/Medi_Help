@@ -15,5 +15,5 @@ COPY --from=build /app/target/mediqueue-0.0.1-SNAPSHOT.jar app.jar
 # Port is injected by Railway automatically
 EXPOSE 8080
 
-# Run the JAR and tell Spring to use the injected PORT variable
-ENTRYPOINT ["java", "-Xmx384m", "-jar", "app.jar", "--server.port=${PORT}", "--server.address=0.0.0.0"]
+# Run the JAR
+ENTRYPOINT ["java", "-Xmx384m", "-jar", "app.jar"]
