@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'services/api_service.dart';
+import 'globals.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,6 +12,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
+  bool _isLoading = false;
 
   void _handleLogin() async {
     if (_emailController.text.isEmpty) {
@@ -19,23 +22,45 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+    setState(() => _isLoading = true);
+
     try {
       final email = _emailController.text.trim();
-      // 1. Send OTP to the entered email
-      final response = await ApiService.sendOtp(email);
+      // Bypass the OTP email entirely, and just "verify" using the hardcoded 1111 code
+      // to retrieve the user object from the backend.
+      final response = await ApiService.verifyOtp(email, "1111");
 
       if (response.statusCode == 200) {
-        // Success
-        Navigator.pushNamed(context, '/otp', arguments: email);
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        
+        if (responseData['user'] == null) {
+          if (mounted) {
+             ScaffoldMessenger.of(context).showSnackBar(
+               const SnackBar(content: Text('No account found. Please sign up first.'), duration: Duration(seconds: 4)),
+             );
+          }
+          return;
+        }
+
+        // Set global state
+        Globals.currentUser = responseData['user'];
+        // Navigate
+        if (mounted) Navigator.pushReplacementNamed(context, '/main', arguments: email);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Backend error: ${response.statusCode}')),
-        );
+        if (mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             SnackBar(content: Text('Backend error: ${response.statusCode}')),
+           );
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Connection failed: $e')),
-      );
+      if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(content: Text('Connection failed: $e')),
+         );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -70,12 +95,14 @@ class _LoginPageState extends State<LoginPage> {
               width: double.infinity,
               height: 55,
               child: ElevatedButton(
-                onPressed: _handleLogin,
+                onPressed: _isLoading ? null : _handleLogin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF06B6D4),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                 ),
-                child: const Text("Get OTP", style: TextStyle(color: Colors.white, fontSize: 18)),
+                child: _isLoading 
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text("Login", style: TextStyle(color: Colors.white, fontSize: 18)),
               ),
             ),
             const SizedBox(height: 20),

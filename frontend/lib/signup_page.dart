@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'dart:convert';
 import 'services/api_service.dart';
+import 'globals.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -59,13 +61,10 @@ class _SignupPageState extends State<SignupPage> {
       final regResponse = await ApiService.registerUser(data, _idPhoto);
 
       if (regResponse.statusCode == 200 || regResponse.statusCode == 201) {
-        // 2. Send OTP
-        final otpResponse = await ApiService.sendOtp(email);
-        if (otpResponse.statusCode == 200) {
-           if (mounted) Navigator.pushNamed(context, '/otp', arguments: email);
-        } else {
-           if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to send OTP')));
-        }
+        // Set the global user state so the app knows we are logged in
+        Globals.currentUser = jsonDecode(regResponse.body);
+        // Bypass OTP completely and go straight to main
+        if (mounted) Navigator.pushReplacementNamed(context, '/main', arguments: email);
       } else {
         if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Registration failed')));
       }
