@@ -4,9 +4,10 @@ import 'dart:io';
 
 class ApiService {
   // Use correct backend URL depending on platform
-  // Windows/Web: http://localhost:8082/api
-  // Production Railway URL
-  static const String baseUrl = 'https://medihelp-production-3835.up.railway.app/api';
+  // For Windows/Web use: http://localhost:8082/api
+  // For Android Emulator use: http://10.0.2.2:8082/api
+  // For Physical Phone on same Wi-Fi use: http://192.168.1.6:8082/api
+  static const String baseUrl = 'http://192.168.1.6:8082/api';
 
   // ----------------- AUTHENTICATION & REGISTRATION -----------------
   // Register unified user with multipart support

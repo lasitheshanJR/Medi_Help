@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'services/api_service.dart';
-import 'globals.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,60 +9,19 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
-  bool _isLoading = false;
 
-  void _handleLogin() async {
+  void _handleLogin() {
     if (_emailController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter an email address')),
       );
       return;
     }
-
-    setState(() => _isLoading = true);
-
-    try {
-      final email = _emailController.text.trim();
-      // Bypass the OTP email entirely, and just "verify" using the hardcoded 1111 code
-      // to retrieve the user object from the backend.
-      final response = await ApiService.verifyOtp(email, "1111");
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        
-        if (responseData['user'] == null) {
-          if (mounted) {
-             ScaffoldMessenger.of(context).showSnackBar(
-               const SnackBar(content: Text('No account found. Please sign up first.'), duration: Duration(seconds: 4)),
-             );
-          }
-          return;
-        }
-
-        // Set global state
-        Globals.currentUser = responseData['user'];
-        // Navigate
-        if (mounted) Navigator.pushReplacementNamed(context, '/main', arguments: email);
-      } else {
-        if (mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text('Backend error: ${response.statusCode}')),
-           );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-         ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text('Connection failed: $e')),
-         );
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+    // Go directly to main app - no OTP, no backend call
+    Navigator.pushReplacementNamed(context, '/main');
   }
 
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -95,14 +51,12 @@ class _LoginPageState extends State<LoginPage> {
               width: double.infinity,
               height: 55,
               child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleLogin,
+                onPressed: _handleLogin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF06B6D4),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                 ),
-                child: _isLoading 
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Login", style: TextStyle(color: Colors.white, fontSize: 18)),
+                child: const Text("Login", style: TextStyle(color: Colors.white, fontSize: 18)),
               ),
             ),
             const SizedBox(height: 20),
