@@ -17,7 +17,7 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
-    // ✅ UPDATED
+
     @PostMapping("/book")
     public Appointment bookAppointment(@RequestBody AppointmentRequest request) {
         return appointmentService.bookAppointment(request);
